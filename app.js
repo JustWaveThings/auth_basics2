@@ -15,6 +15,14 @@ const db = mongoose.connection;
 
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
+const User = mongoose.model(
+  "User",
+  new Schema({
+    username: { type: String, required: true },
+    password: { type: String, required: true },
+  })
+);
+
 const app = express();
 app.set("views", __dirname);
 app.set("view engine", "ejs");
@@ -25,5 +33,19 @@ app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => res.render("index"));
+app.get("/sign-up", (req, res) => res.render("sign-up-form"));
+
+app.post("/sign-up", async (req, res, next) => {
+  try {
+    const user = new User({
+      username: req.body.username,
+      password: req.body.password,
+    });
+    await user.save();
+    res.redirect("/");
+  } catch (error) {
+    next(error);
+  }
+});
 
 app.listen(3001, () => console.log("App listening on port 3001!"));
