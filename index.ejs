@@ -1,14 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title></title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <title></title>
-</head>
+  <body>
+    <h1>Auth Basics 2</h1>
+    <a href="./sign-up">sign up</a>
 
-<body>
-  <h1>Auth Basics 2</h1>
-  <a href="./sign-up">sign up</a>
-</body>
-
+    <% if (user) {%>
+    <h3>Logged in as: <%= user.username %></h3>
+    <a href="/log-out">log out</a>
+    <% } else { %>
+    <h2>Please log in</h2>
+    <form action="/log-in" method="POST">
+      <label for="username">Username</label>
+      <input name="username" placeholder="username" type="text" />
+      <label for="password">Password</label>
+      <input name="password" type="password" />
+      <button>Log In</button>
+      <% if (authMessage) { %>
+      <p>Authentication Error: <%= message %></p>
+      <% } %>
+    </form>
+    <% } %>
+  </body>
 </html>
