@@ -7,14 +7,18 @@ const LocalStrategy = require("passport-local").Strategy;
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+// db connection
 const mongoDB = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@cluster0.dmc0his.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
+// connect to db
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const db = mongoose.connection;
 
+// db connection error handling
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
+// user schema
 const User = mongoose.model(
   "User",
   new Schema({
@@ -23,18 +27,26 @@ const User = mongoose.model(
   })
 );
 
+// express app
 const app = express();
+
+// express view engine setup
 app.set("views", __dirname);
 app.set("view engine", "ejs");
 
+//  express session setup
 app.use(session({ secret: "dogs", resave: false, saveUninitialized: true }));
+
+// passport setup
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 
+// get handler
 app.get("/", (req, res) => res.render("index"));
 app.get("/sign-up", (req, res) => res.render("sign-up-form"));
 
+// post handler for sign-up
 app.post("/sign-up", async (req, res, next) => {
   try {
     const user = new User({
@@ -48,4 +60,5 @@ app.post("/sign-up", async (req, res, next) => {
   }
 });
 
+// express server listener
 app.listen(3001, () => console.log("App listening on port 3001!"));
