@@ -79,6 +79,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 
+// express locals  middleware -- gives us access to the user throughough the app
+
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  next();
+});
+
 // get handler  which gets the user from the request and renders the index page
 app.get("/", async (req, res) => {
   let sessionAuthMessage = req.session.messages
